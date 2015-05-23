@@ -1,4 +1,4 @@
-package net.dotzour.visualCaptcha;
+package com.kuhniverse.domain;
 
 import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static java.util.Collections.shuffle;
 

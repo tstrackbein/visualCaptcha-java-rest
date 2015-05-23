@@ -1,4 +1,4 @@
-package net.dotzour.visualCaptcha;
+package com.kuhniverse.domain;
 
 import java.util.ArrayList;
 import java.util.List;

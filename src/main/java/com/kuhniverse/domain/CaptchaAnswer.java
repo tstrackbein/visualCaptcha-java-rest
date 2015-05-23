@@ -1,4 +1,4 @@
-package net.dotzour.visualCaptcha;
+package com.kuhniverse.domain;
 
 import java.io.Serializable;
 

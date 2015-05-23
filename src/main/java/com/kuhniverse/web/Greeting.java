@@ -1,4 +1,4 @@
-package com.kuhniverse.captcha;
+package com.kuhniverse.web;
 
 /**
  * Created by timafe on 22.05.2015.

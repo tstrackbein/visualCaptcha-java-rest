@@ -1,6 +1,6 @@
-package com.kuhniverse.captcha;
+package com.kuhniverse.web;
 
-import net.dotzour.visualCaptcha.CaptchaFrontEndData;
+import com.kuhniverse.domain.CaptchaFrontEndData;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;

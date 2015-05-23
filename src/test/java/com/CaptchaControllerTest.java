@@ -1,7 +1,7 @@
 package com;
 
-import com.kuhniverse.captcha.CaptchaController;
-import net.dotzour.visualCaptcha.CaptchaFrontEndData;
+import com.kuhniverse.web.CaptchaController;
+import com.kuhniverse.domain.CaptchaFrontEndData;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
