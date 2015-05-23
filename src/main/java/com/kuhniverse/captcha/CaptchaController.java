@@ -1,11 +1,10 @@
 package com.kuhniverse.captcha;
 
 import net.dotzour.visualCaptcha.CaptchaFrontEndData;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -25,9 +24,13 @@ public class CaptchaController {
                 String.format(template, name));
     }
 
-    @RequestMapping("/start")
-    public CaptchaFrontEndData start() {
-        return new CaptchaFrontEndData("","",new ArrayList<String>(),"");
+    @RequestMapping(value="/start/{optionCount}", method= RequestMethod.GET)
+    public CaptchaFrontEndData start(@PathVariable int optionCount) {
+        List<String> images = new  ArrayList<String>();
+        for (int i = 0; i < optionCount; i++) {
+            images.add(i +"");
+        }
+        return new CaptchaFrontEndData("","",images,"");
     }
 
 }
