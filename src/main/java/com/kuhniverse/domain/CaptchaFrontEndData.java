@@ -3,8 +3,7 @@ package com.kuhniverse.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CaptchaFrontEndData
-{
+public class CaptchaFrontEndData {
     private String imageName;
     private String imageFieldName;
     private List<String> values;

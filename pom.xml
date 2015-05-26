@@ -5,6 +5,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!--  -->
     <groupId>com-kuhniverse.captcha</groupId>
     <artifactId>visualCaptcha-java-rest</artifactId>
     <name>Visual Captcha Implementation using Spring based Rest Services</name>
@@ -24,6 +25,16 @@
         <junit.version>4.11</junit.version>
         <spring.version>4.1.6.RELEASE</spring.version>
     </properties>
+
+    <ciManagement>
+        <system>Travis-CI</system>
+        <url>https://travis-ci.org/tillkuhn/visualCaptcha-java-rest</url>
+    </ciManagement>
+
+    <organization>
+        <name>GitHub!</name>
+        <url>https://github.com/tillkuhn/visualCaptcha-java-rest</url>
+    </organization>
 
     <dependencies>
         <dependency>
@@ -47,12 +58,14 @@
             <version>1.7.7</version>
         </dependency>
 
+        <!--
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
+        -->
 
         <dependency>
             <groupId>javax.inject</groupId>
