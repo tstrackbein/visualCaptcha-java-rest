@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="visualCaptcha Full-stack Demo for Java / Spring / Rest &amp; AngularJS : Java / Spring REST backend for visualCaptcha">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>visualCaptcha Full-stack Demo for Java / Spring / Rest &amp; AngularJS</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/tillkuhn/visualCaptcha-java-rest">View on GitHub</a>
+
+          <h1 id="project_title">visualCaptcha Full-stack Demo for Java / Spring / Rest &amp; AngularJS</h1>
+          <h2 id="project_tagline">Java / Spring REST backend for visualCaptcha</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/tillkuhn/visualCaptcha-java-rest/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/tillkuhn/visualCaptcha-java-rest/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a id="visualcaptcha-java-rest-" class="anchor" href="#visualcaptcha-java-rest-" aria-hidden="true"><span class="octicon octicon-link"></span></a>visualCaptcha-java-rest <a href="https://travis-ci.org/tillkuhn/visualCaptcha-java-rest"><img src="https://travis-ci.org/tillkuhn/visualCaptcha-java-rest.svg?branch=master" alt="Build Status"></a>
+</h1>
+
+<p>This is a demo/sample standalone app that uses Spring Boot and the visualCaptcha AngularJS bower package as a proof-of-concept for how to integrate with REST Services based on Spring / Java.</p>
+
+<p>It's forked out of bdotzour's <a href="https://github.com/bdotzour/visualCaptcha-java">visualCaptcha-java</a> project (Plain Java Servlet backend for visualCaptcha) using Spring RestController as opposed to Servlets.</p>
+
+<p>Runs as a standalone application with Spring Boot so all you need to do is run <code>mvn spring-boot:run</code> and point your browser to http://localhost:8080. Most recent version also adds docker support.</p>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<pre><code>git clone https://github.com/tillkuhn/visualCaptcha-java-rest.git
+mvn verify
+</code></pre>
+
+<h2>
+<a id="run-tests" class="anchor" href="#run-tests" aria-hidden="true"><span class="octicon octicon-link"></span></a>Run tests</h2>
+
+<pre><code>mvn test
+</code></pre>
+
+<h2>
+<a id="run-application-using-maven" class="anchor" href="#run-application-using-maven" aria-hidden="true"><span class="octicon octicon-link"></span></a>Run application using maven</h2>
+
+<pre><code>mvn spring-boot:run
+</code></pre>
+
+<h2>
+<a id="run-application-using-docker" class="anchor" href="#run-application-using-docker" aria-hidden="true"><span class="octicon octicon-link"></span></a>Run application using docker</h2>
+
+<p>Note: Docker support is still experimental</p>
+
+<pre><code>docker build -t visual_captcha_java_rest .
+docker run -d -p 8080:8080 visual_captcha_java_rest
+</code></pre>
+
+<h2>
+<a id="todos" class="anchor" href="#todos" aria-hidden="true"><span class="octicon octicon-link"></span></a>Todos</h2>
+
+<ul>
+<li>Complete Implementation for Audio</li>
+<li>Dockerize</li>
+<li>Spring Integration tests</li>
+</ul>
+
+<h2>
+<a id="attention" class="anchor" href="#attention" aria-hidden="true"><span class="octicon octicon-link"></span></a>Attention</h2>
+
+<p>Work is still in progress and not yet finished, but feel free to contribute!</p>
+
+<h2>
+<a id="api" class="anchor" href="#api" aria-hidden="true"><span class="octicon octicon-link"></span></a>API</h2>
+
+<p>Copied from <a href="https://github.com/emotionLoop/visualCaptcha-PHP/blob/master/README.md">https://github.com/emotionLoop/visualCaptcha-PHP/blob/master/README.md</a></p>
+
+<p>visualCaptcha, since 5.0, uses an API for increased security and to become back-end-agnostic (that's why you can easily plug-in a Vanilla JS, AngularJS, or jQuery front-end without changing anything).</p>
+
+<p>It expects the following routes to exist, which we've put in this sample, using Slim (just to make it easier).</p>
+
+<p>You are expected to have these routes in your implementation, but you can change them in visualCaptcha's front-end config.</p>
+
+<h3>
+<a id="get-starthowmany" class="anchor" href="#get-starthowmany" aria-hidden="true"><span class="octicon octicon-link"></span></a>GET <code>/start/:howmany</code>
+</h3>
+
+<p>This route will be the first route called by the front-end, which will generate and store session data.</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li>
+<code>howmany</code> is required, the number of images to generate.</li>
+</ul>
+
+<h3>
+<a id="get-imageindex" class="anchor" href="#get-imageindex" aria-hidden="true"><span class="octicon octicon-link"></span></a>GET <code>/image/:index</code>
+</h3>
+
+<p>This route will be called for each image, to get it and show it, by index.</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li>
+<code>index</code> is required, the index of the image you want to get.</li>
+</ul>
+
+<h3>
+<a id="get-audiotype" class="anchor" href="#get-audiotype" aria-hidden="true"><span class="octicon octicon-link"></span></a>GET <code>/audio(/:type)</code>
+</h3>
+
+<p>This route will be called for the audio file, to get it and play it, either the mp3 or ogg file.</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li>
+<code>type</code> is optional, the audio file format defaults to <code>mp3</code>, but can also be <code>ogg</code>.</li>
+</ul>
+
+<h3>
+<a id="post-try" class="anchor" href="#post-try" aria-hidden="true"><span class="octicon octicon-link"></span></a>POST <code>/try</code>
+</h3>
+
+<p>This is just a sample route, where we post the form to, and where the visualCaptcha validation takes place.</p>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>Check the LICENSE file.</p>
+
+<h2>
+<a id="links" class="anchor" href="#links" aria-hidden="true"><span class="octicon octicon-link"></span></a>Links</h2>
+
+<ul>
+<li><a href="http://visualcaptcha.net/">visualCaptcha Homepage</a></li>
+<li><a href="https://github.com/emotionLoop/visualCaptcha-ruby">visualCaptcha Ruby + AngularJS</a></li>
+<li><a href="https://github.com/bdotzour/visualCaptcha-java">visualCaptcha Java</a></li>
+</ul>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">visualCaptcha Full-stack Demo for Java / Spring / Rest &amp; AngularJS maintained by <a href="https://github.com/tillkuhn">tillkuhn</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
