@@ -49,7 +49,7 @@ public class CaptchaRepositoryTest {
         captchaRepository.init();
         String path1 = captchaRepository.getAudios().get(0).getPath();
         Assert.assertNotNull(path1);
-        InputStream is = captchaRepository.getAudtioStream(path1);
+        InputStream is = captchaRepository.getAudioStream(path1,CaptchaRepository.AudioType.MP3);
         Assert.assertNotNull("Audio Path " + path1 + " must exist", is);
     }
 

@@ -83,28 +83,16 @@ public class CaptchaSession implements Serializable {
     /**
      * Get data for a particular audio file
      */
-    public InputStream getAudio(int index, String fileType) {
-        /*
-        String fileType = "mp3";
-        MediaType contentType = MediaType.MPEG_AUDIO;
-
-        if (param != null && "ogg".equals(param)) {
-            fileType = "ogg";
-            contentType = MediaType.OGG_AUDIO;
-        }
-        */
-
+    public InputStream getAudio(CaptchaRepository.AudioType audioType) {
         if (this.captchaSessionInfo == null) {
-            throw new RuntimeException("Captcha not initialized, cannot return image");
+            throw new RuntimeException("Captcha not initialized, cannot return audio");
         }
-        List<CaptchaAnswer> answers = captchaSessionInfo.getChoices();
-        if (answers != null && answers.size() > index) {
-            CaptchaAnswer ca = answers.get(index);
-            log.debug("Serving audio {}", ca);
-            return captchaRepository.getAudtioStream(ca.getPath());
-        } else {
-            throw new RuntimeException("Requested image for invalid index: " + index);
+        CaptchaAnswer captchaAnswer = this.captchaSessionInfo.getAudioAnswer();
+        if (captchaAnswer == null) {
+            throw new RuntimeException("Requested audio answer not found");
         }
+        log.debug("Serving audio {}", captchaAnswer);
+        return captchaRepository.getAudioStream(captchaAnswer.getPath(), audioType);
     }
 
     /**
@@ -115,20 +103,40 @@ public class CaptchaSession implements Serializable {
         if (this.captchaSessionInfo == null) {
             throw new RuntimeException("Captcha not initialized, cannot validate");
         }
-        String expectedFieldName = captchaSessionInfo.getFieldName();
-        if (!params.containsKey(expectedFieldName)) {
-            log.warn("Invalid response, fieldname {} not found in params (size={})", expectedFieldName, params.size());
+        String audioFieldName = captchaSessionInfo.getAudioFieldName();
+        String imageFieldName = captchaSessionInfo.getFieldName();
+        if (params.containsKey(audioFieldName)) {
+            return validateAudio(params.get(audioFieldName));
+        } else if (params.containsKey(imageFieldName)) {
+            return validateImage(params.get(imageFieldName));
+        } else {
+            log.warn("Invalid response, neither audio fieldname {} nor image fieldname {} found in params (size={})", audioFieldName, imageFieldName, params.size());
             return false;
         }
-        String obfuscatedChoiceName = params.get(expectedFieldName);
-
-        if (!captchaSessionInfo.getValidChoice().equals(obfuscatedChoiceName)) {
-            log.warn("Invalid response, choice {} does not match valid choice {}", obfuscatedChoiceName, captchaSessionInfo.getValidChoice());
-            return false;
-        }
-        log.debug("Captcha successfully verified ({}={})", expectedFieldName, obfuscatedChoiceName);
-        return true;
     }
+
+    private boolean validateImage(String answer) {
+        String expectedAnswer = captchaSessionInfo.getValidChoice();
+        if (!captchaSessionInfo.getValidChoice().equals(answer)) {
+            log.warn("Invalid response, image choice {} does not match expected answer {}", answer, expectedAnswer);
+            return false;
+        } else {
+            log.debug("Image Captcha successfully verified ({}={})", answer, expectedAnswer);
+            return true;
+        }
+    }
+
+    private boolean validateAudio(String answer) {
+        String expectedAnswer = captchaSessionInfo.getAudioAnswer().getName().toLowerCase();
+        if (!expectedAnswer.equals(answer.toLowerCase())) {
+            log.warn("Invalid response, audio answer {} does not match expected anwer {}", answer, expectedAnswer);
+            return false;
+        } else {
+            log.debug("Audio Captcha successfully verified ({}={})", answer, expectedAnswer);
+            return true;
+        }
+    }
+
 
     /**
      * Invalidates current Session Info

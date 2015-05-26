@@ -69,7 +69,7 @@ public class CaptchaControllerTest {
         Assert.assertEquals(size,cfed.getValues().size());
         for (int i = 0; i < size; i++) {
             HttpServletResponse  response = new MockHttpServletResponse();
-            controller.audio(i, response);
+            controller.audio("mp3", response);
             // TODO AUDIO MEDIA TYPE
             Assert.assertNotEquals(MediaType.IMAGE_PNG_VALUE, response.getContentType());
         }

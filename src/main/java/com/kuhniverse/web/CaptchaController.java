@@ -2,6 +2,7 @@ package com.kuhniverse.web;
 
 import com.kuhniverse.business.CaptchaSession;
 import com.kuhniverse.domain.CaptchaFrontEndData;
+import com.kuhniverse.integration.CaptchaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -34,12 +35,19 @@ public class CaptchaController {
     @Inject
     private CaptchaSession captchaSession;
 
+    /**
+     * Get init json
+     */
     @RequestMapping(value="/start/{howMany}", method= RequestMethod.GET)
     @ResponseBody
     public CaptchaFrontEndData start(@PathVariable int howMany) {
         return captchaSession.start(howMany);
     }
 
+
+    /**
+     * Get Image response
+     */
     @RequestMapping(value="/image/{index}", method= RequestMethod.GET)
     // RequestParam boolean retina
     public void image(@PathVariable int index,HttpServletResponse response) {
@@ -49,16 +57,29 @@ public class CaptchaController {
         writeResponse(contentType,input,response);
     }
 
-    @RequestMapping(value="/audio/{index}", method= RequestMethod.GET)
-    public void audio(@PathVariable int index,HttpServletResponse response) {
-        InputStream input = captchaSession.getAudio(index,"mp3");
+    /**
+     * Get Audio response
+     */
+    @RequestMapping(value="/audio/{audioType}", method= RequestMethod.GET)
+    public void audio(@PathVariable String audioType,HttpServletResponse response) {
+        CaptchaRepository.AudioType audioTypEnum = CaptchaRepository.AudioType.valueOf(audioType.toUpperCase());
+        // TODO exeption handling if type not found
+        InputStream input = captchaSession.getAudio(audioTypEnum);
         MediaType contentType = MediaType.APPLICATION_OCTET_STREAM;
         writeResponse(contentType,input,response);
     }
 
+    /**
+     * Get Audio response in default mp3 format
+     */
+    @RequestMapping(value="/audio", method= RequestMethod.GET)
+    public void audio(HttpServletResponse response) {
+        audio(CaptchaRepository.AudioType.MP3.name().toLowerCase(), response);
+    }
+
     @RequestMapping(value="/try", method= RequestMethod.POST)
     public void validate(HttpServletRequest request,HttpServletResponse response) {
-        log.debug("Validating captcha response {}",request.getParameter("submit-bt:"));
+        log.debug("Validating captcha response");
         Enumeration<String> keys = request.getParameterNames();
         Map<String,String> params = new HashMap<>();
         while (keys.hasMoreElements() ) {

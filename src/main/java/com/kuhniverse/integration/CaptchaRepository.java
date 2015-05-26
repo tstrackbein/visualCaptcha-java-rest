@@ -18,6 +18,10 @@ import java.util.List;
 @Repository
 public class CaptchaRepository {
 
+    public enum AudioType {
+        MP3,OGG;
+    }
+
     private static final String RESOURCE_ROOT = "captcha";
     private Logger log = LoggerFactory.getLogger(CaptchaRepository.class);
 
@@ -50,7 +54,10 @@ public class CaptchaRepository {
         return getResourceAsStream("images/" + path);
     }
 
-    public InputStream getAudtioStream(String path) {
+    public InputStream getAudioStream(String path,AudioType audioType) {
+        if ( AudioType.OGG == audioType) {
+            path = path.replace(".mp3", ".ogg");
+        };
         return getResourceAsStream("audios/" + path);
     }
 
