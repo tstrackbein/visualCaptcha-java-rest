@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Based on the work of https://github.com/bdotzour/visualCaptcha-java
+ */
 public class CaptchaSessionInfo implements Serializable {
     private List<CaptchaAnswer> choices;
     private String validChoice;

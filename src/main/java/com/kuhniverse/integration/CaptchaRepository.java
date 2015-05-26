@@ -13,6 +13,8 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
+ * Provides access to captcha resources
+ *
  * @author by tillkuhn on 26.05.2015.
  */
 @Repository

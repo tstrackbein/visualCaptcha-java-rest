@@ -22,6 +22,11 @@ import java.util.UUID;
 
 import static java.util.Collections.shuffle;
 
+/**
+ * Main business logic for captcha interaction + holder for session information
+ *
+ * Based on the work of https://github.com/bdotzour/visualCaptcha-java
+ */
 @Component
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS, value = "session")
 public class CaptchaSession implements Serializable {

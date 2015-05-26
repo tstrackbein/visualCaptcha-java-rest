@@ -9,6 +9,9 @@ import org.springframework.context.ApplicationContext;
  * @author timafe on 22.05.2015.
  */
 
+/**
+ * Main entry point for spring boot
+ */
 @SpringBootApplication
 public class Application {
 

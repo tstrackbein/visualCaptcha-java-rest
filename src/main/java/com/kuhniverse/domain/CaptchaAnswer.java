@@ -2,6 +2,9 @@ package com.kuhniverse.domain;
 
 import java.io.Serializable;
 
+/**
+ * Based on the work of https://github.com/bdotzour/visualCaptcha-java
+ */
 public class CaptchaAnswer implements Serializable {
     private String name;
     private String path;

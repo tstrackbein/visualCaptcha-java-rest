@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * controller methods for captcha API
+ *
  * @author by timafe on 22.05.2015.
  */
 
