@@ -12,10 +12,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by timafe on 22.05.2015.
@@ -40,8 +44,43 @@ public class CaptchaController {
     // RequestParam boolean retina
     public void image(@PathVariable int index,HttpServletResponse response) {
         boolean retina = false;
-        MediaType contentType = MediaType.IMAGE_PNG;
         InputStream input = captchaSession.getImage(index, retina);
+        MediaType contentType = MediaType.IMAGE_PNG;
+        writeResponse(contentType,input,response);
+    }
+
+    @RequestMapping(value="/audio/{index}", method= RequestMethod.GET)
+    public void audio(@PathVariable int index,HttpServletResponse response) {
+        InputStream input = captchaSession.getAudio(index,"mp3");
+        MediaType contentType = MediaType.APPLICATION_OCTET_STREAM;
+        writeResponse(contentType,input,response);
+    }
+
+    @RequestMapping(value="/try", method= RequestMethod.POST)
+    public void validate(HttpServletRequest request,HttpServletResponse response) {
+        log.debug("Validating captcha response {}",request.getParameter("submit-bt:"));
+        Enumeration<String> keys = request.getParameterNames();
+        Map<String,String> params = new HashMap<>();
+        while (keys.hasMoreElements() ) {
+            String key = keys.nextElement();
+            params.put(key,request.getParameter(key));
+        }
+        try {
+
+            boolean result = captchaSession.isValid(params);
+            if (result) {
+                response.getWriter().write("You did it!");
+            } else {
+                response.getWriter().write("Your answer was wrong!");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            captchaSession.invalidate();
+        }
+    }
+
+    private void writeResponse(MediaType  contentType, InputStream input, HttpServletResponse response) {
         OutputStream output = null;
         byte[] buffer = new byte[10240];
         try {
@@ -52,22 +91,12 @@ public class CaptchaController {
             }
             output.flush();
         } catch (IOException e) {
-            throw new RuntimeException("Cannot load image index " + index,e);
+            throw new RuntimeException("Cannot load resource",e);
         }finally {
             try { output.close(); } catch (IOException ignore) {}
             try { input.close(); } catch (IOException ignore) {}
         }
-    }
 
-    @RequestMapping(value="/audio/{type}", method= RequestMethod.GET)
-    public void audio(@PathVariable String type) {
-        throw new UnsupportedOperationException();
     }
-
-    @RequestMapping(value="/try", method= RequestMethod.POST)
-    public void doTry() {
-        throw new UnsupportedOperationException();
-    }
-
 
 }

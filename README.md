@@ -28,7 +28,9 @@ mvn test
 
 ## Todos
 
-Most of the implementation :-)
+* Complete Implementation for Audio
+* Dockerize
+* Spring Integration tests
 
 ## Attention
 

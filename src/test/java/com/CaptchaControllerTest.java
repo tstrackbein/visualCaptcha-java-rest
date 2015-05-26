@@ -8,9 +8,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -18,38 +20,59 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class CaptchaControllerTest {
 
-    private CaptchaController cc;
+    private CaptchaController controller;
 
     @Before
     public void before() {
 
-        cc = new CaptchaController();
+        controller = new CaptchaController();
         CaptchaSession cs = new CaptchaSession();
         CaptchaRepository cr = new CaptchaRepository();
         cr.init();
         ReflectionTestUtils.setField(cs, "captchaRepository", cr);
-        ReflectionTestUtils.setField(cc,"captchaSession",cs);
+        ReflectionTestUtils.setField(controller,"captchaSession",cs);
     }
 
     @Test
     public void testStart() {
         int size = 5;
-        CaptchaFrontEndData cfed = cc.start(size);
+        CaptchaFrontEndData cfed = controller.start(size);
         Assert.assertEquals(size,cfed.getValues().size());
     }
 
 
     @Test
-    public void testGetIndex() {
+    public void testValidate() {
+        controller.start(2);
+        HttpServletRequest request = new MockHttpServletRequest();
+        HttpServletResponse  response = new MockHttpServletResponse();
+        controller.validate(request, response);
+        Assert.assertTrue(response.getStatus() == 200);
+    }
+
+    @Test
+    public void testGetImageIndex() {
         int size = 2;
-        CaptchaFrontEndData cfed = cc.start(size);
+        CaptchaFrontEndData cfed = controller.start(size);
         Assert.assertEquals(size,cfed.getValues().size());
         for (int i = 0; i < size; i++) {
             HttpServletResponse  response = new MockHttpServletResponse();
-            cc.image(i, response);
+            controller.image(i, response);
             Assert.assertEquals(MediaType.IMAGE_PNG_VALUE,response.getContentType());
         }
     }
 
+    // @Test
+    public void testGetAudio() {
+        int size = 2;
+        CaptchaFrontEndData cfed = controller.start(size);
+        Assert.assertEquals(size,cfed.getValues().size());
+        for (int i = 0; i < size; i++) {
+            HttpServletResponse  response = new MockHttpServletResponse();
+            controller.audio(i, response);
+            // TODO AUDIO MEDIA TYPE
+            Assert.assertNotEquals(MediaType.IMAGE_PNG_VALUE, response.getContentType());
+        }
+    }
 
 }

@@ -1,4 +1,5 @@
 *.log
+*.bat
 *.iml
 .idea
 target
