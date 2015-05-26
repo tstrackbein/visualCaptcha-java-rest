@@ -5,6 +5,7 @@ import com.kuhniverse.domain.CaptchaFrontEndData;
 import com.kuhniverse.integration.CaptchaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,7 +39,7 @@ public class CaptchaController {
     /**
      * Get init json
      */
-    @RequestMapping(value="/start/{howMany}", method= RequestMethod.GET)
+    @RequestMapping(value = "/start/{howMany}", method = RequestMethod.GET)
     @ResponseBody
     public CaptchaFrontEndData start(@PathVariable int howMany) {
         return captchaSession.start(howMany);
@@ -48,74 +49,81 @@ public class CaptchaController {
     /**
      * Get Image response
      */
-    @RequestMapping(value="/image/{index}", method= RequestMethod.GET)
+    @RequestMapping(value = "/image/{index}", method = RequestMethod.GET)
     // RequestParam boolean retina
-    public void image(@PathVariable int index,HttpServletResponse response) {
+    public void image(@PathVariable int index, HttpServletResponse response) {
         boolean retina = false;
         InputStream input = captchaSession.getImage(index, retina);
         MediaType contentType = MediaType.IMAGE_PNG;
-        writeResponse(contentType,input,response);
+        writeResponse(contentType, input, response);
     }
 
     /**
      * Get Audio response
      */
-    @RequestMapping(value="/audio/{audioType}", method= RequestMethod.GET)
-    public void audio(@PathVariable String audioType,HttpServletResponse response) {
+    @RequestMapping(value = "/audio/{audioType}", method = RequestMethod.GET)
+    public void audio(@PathVariable String audioType, HttpServletResponse response) {
         CaptchaRepository.AudioType audioTypEnum = CaptchaRepository.AudioType.valueOf(audioType.toUpperCase());
         // TODO exeption handling if type not found
         InputStream input = captchaSession.getAudio(audioTypEnum);
         MediaType contentType = MediaType.APPLICATION_OCTET_STREAM;
-        writeResponse(contentType,input,response);
+        writeResponse(contentType, input, response);
     }
 
     /**
      * Get Audio response in default mp3 format
      */
-    @RequestMapping(value="/audio", method= RequestMethod.GET)
+    @RequestMapping(value = "/audio", method = RequestMethod.GET)
     public void audio(HttpServletResponse response) {
         audio(CaptchaRepository.AudioType.MP3.name().toLowerCase(), response);
     }
 
-    @RequestMapping(value="/try", method= RequestMethod.POST)
-    public void validate(HttpServletRequest request,HttpServletResponse response) {
+    @RequestMapping(value = "/try", method = RequestMethod.POST)
+    public void validate(HttpServletRequest request, HttpServletResponse response) {
         log.debug("Validating captcha response");
         Enumeration<String> keys = request.getParameterNames();
-        Map<String,String> params = new HashMap<>();
-        while (keys.hasMoreElements() ) {
+        Map<String, String> params = new HashMap<>();
+        while (keys.hasMoreElements()) {
             String key = keys.nextElement();
-            params.put(key,request.getParameter(key));
+            params.put(key, request.getParameter(key));
         }
-        try {
-
-            boolean result = captchaSession.isValid(params);
-            if (result) {
-                response.getWriter().write("You did it!");
-            } else {
-                response.getWriter().write("Your answer was wrong!");
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } finally {
-            captchaSession.invalidate();
+        boolean result = captchaSession.isValid(params);
+        String status = null;
+        if (result) {
+            status = "validImage";
+        } else {
+            status = "failedImage";
         }
+        response.setStatus(HttpStatus.FOUND.value());
+        response.setHeader("Location", "/?status=" + status);
+        // /?status=failedImage
+        // /?status=validImage
+        //?status=failedAudio
+        ///?status=validAudio;
+        captchaSession.invalidate();
     }
 
-    private void writeResponse(MediaType  contentType, InputStream input, HttpServletResponse response) {
+    private void writeResponse(MediaType contentType, InputStream input, HttpServletResponse response) {
         OutputStream output = null;
         byte[] buffer = new byte[10240];
         try {
             response.setContentType(contentType.toString());
             output = response.getOutputStream();
-            for (int length = 0; (length = input.read(buffer)) > 0;) {
+            for (int length = 0; (length = input.read(buffer)) > 0; ) {
                 output.write(buffer, 0, length);
             }
             output.flush();
         } catch (IOException e) {
-            throw new RuntimeException("Cannot load resource",e);
-        }finally {
-            try { output.close(); } catch (IOException ignore) {}
-            try { input.close(); } catch (IOException ignore) {}
+            throw new RuntimeException("Cannot load resource", e);
+        } finally {
+            try {
+                output.close();
+            } catch (IOException ignore) {
+            }
+            try {
+                input.close();
+            } catch (IOException ignore) {
+            }
         }
 
     }

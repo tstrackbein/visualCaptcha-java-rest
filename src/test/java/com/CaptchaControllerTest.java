@@ -7,6 +7,7 @@ import com.kuhniverse.web.CaptchaController;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -47,7 +48,7 @@ public class CaptchaControllerTest {
         HttpServletRequest request = new MockHttpServletRequest();
         HttpServletResponse  response = new MockHttpServletResponse();
         controller.validate(request, response);
-        Assert.assertTrue(response.getStatus() == 200);
+        Assert.assertTrue(response.getStatus() == HttpStatus.FOUND.value());
     }
 
     @Test
