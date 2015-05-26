@@ -2,7 +2,7 @@ package com.kuhniverse.domain;
 
 import java.io.Serializable;
 
-class CaptchaAnswer implements Serializable
+public class CaptchaAnswer implements Serializable
 {
     private String value;
     private String path;
