@@ -13,7 +13,7 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
- * Created by tillkuhn on 26.05.2015.
+ * @author by tillkuhn on 26.05.2015.
  */
 @Repository
 public class CaptchaRepository {
@@ -27,7 +27,7 @@ public class CaptchaRepository {
 
     private List<CaptchaAnswer> images;
     private List<CaptchaAnswer> audios;
-    ObjectMapper objectMapper = new ObjectMapper();
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @PostConstruct
     public void init() {
@@ -57,12 +57,12 @@ public class CaptchaRepository {
     public InputStream getAudioStream(String path,AudioType audioType) {
         if ( AudioType.OGG == audioType) {
             path = path.replace(".mp3", ".ogg");
-        };
+        }
         return getResourceAsStream("audios/" + path);
     }
 
 
-    public InputStream getResourceAsStream(String resource) {
+    InputStream getResourceAsStream(String resource) {
         return Thread.currentThread().getContextClassLoader().getResourceAsStream(RESOURCE_ROOT + "/" + resource);
     }
 

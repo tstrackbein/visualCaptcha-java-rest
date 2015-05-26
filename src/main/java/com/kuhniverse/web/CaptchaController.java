@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by timafe on 22.05.2015.
+ * @author by timafe on 22.05.2015.
  */
 
 @RestController
@@ -52,7 +52,7 @@ public class CaptchaController {
     @RequestMapping(value = "/image/{index}", method = RequestMethod.GET)
     // RequestParam boolean retina
     public void image(@PathVariable int index, HttpServletResponse response) {
-        boolean retina = false;
+        boolean retina = false; // TODO Implement
         InputStream input = captchaSession.getImage(index, retina);
         MediaType contentType = MediaType.IMAGE_PNG;
         writeResponse(contentType, input, response);
@@ -117,7 +117,9 @@ public class CaptchaController {
             throw new RuntimeException("Cannot load resource", e);
         } finally {
             try {
-                output.close();
+                if (output != null) {
+                    output.close();
+                }
             } catch (IOException ignore) {
             }
             try {

@@ -37,8 +37,6 @@ public class CaptchaSession implements Serializable {
     /**
      * Init captchas with a size of optionCount
      *
-     * @param optionCount
-     * @return
      */
     public CaptchaFrontEndData start(int optionCount) {
 
@@ -167,7 +165,7 @@ public class CaptchaSession implements Serializable {
     }
 
     private CaptchaAnswer getRandomCaptchaAudio(String salt) {
-        List<CaptchaAnswer> options = new ArrayList<CaptchaAnswer>(captchaRepository.getAudios());
+        //List<CaptchaAnswer> options = new ArrayList<CaptchaAnswer>(captchaRepository.getAudios());
         shuffle(captchaRepository.getAudios());
         return captchaRepository.getAudios().get(rand.nextInt(captchaRepository.getAudios().size()));
     }
