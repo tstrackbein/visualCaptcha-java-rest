@@ -14,16 +14,25 @@ git clone https://github.com/tillkuhn/visualCaptcha-java-rest.git
 mvn verify
 ```
 
-## Run application
+## Run tests
+
+```
+mvn test
+```
+
+## Run application using maven
 
 ```
 mvn spring-boot:run
 ```
 
-## Run tests
+## Run application using docker
+
+Note: Docker support is still experimental
 
 ```
-mvn test
+docker build -t visual_captcha_java_rest .
+docker run -d -p 8080:8080 visual_captcha_java_rest
 ```
 
 ## Todos

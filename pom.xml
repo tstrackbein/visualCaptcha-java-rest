@@ -5,13 +5,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!--  -->
+    <!-- run  mvn package && java -jar target/visualCaptcha-java-rest-0.1.jar -->
     <groupId>com-kuhniverse.captcha</groupId>
     <artifactId>visualCaptcha-java-rest</artifactId>
-    <name>Visual Captcha Implementation using Spring based Rest Services</name>
+    <!--<name>${project.artifactId}</name> -->
+    <description>Visual Captcha Implementation using Spring based Rest Services</description>
     <version>0.1</version>
-    <packaging>war</packaging>
-
+    <packaging>jar</packaging>
+    <url>https://github.com/tillkuhn/visualCaptcha-java-res</url>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -24,17 +25,13 @@
         <mockito.version>1.9.5</mockito.version>
         <junit.version>4.11</junit.version>
         <spring.version>4.1.6.RELEASE</spring.version>
+        <docker.image.prefix>captcha</docker.image.prefix>
     </properties>
 
     <ciManagement>
         <system>Travis-CI</system>
         <url>https://travis-ci.org/tillkuhn/visualCaptcha-java-rest</url>
     </ciManagement>
-
-    <organization>
-        <name>GitHub!</name>
-        <url>https://github.com/tillkuhn/visualCaptcha-java-rest</url>
-    </organization>
 
     <dependencies>
         <dependency>
@@ -114,6 +111,16 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
+            <!--
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <finalName>${project.artifactId}-final</finalName>
+                </configuration>
+            </plugin>
+            -->
         </plugins>
     </build>
 
