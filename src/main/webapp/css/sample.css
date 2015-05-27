@@ -20,8 +20,6 @@ body {
     min-height: 768px;
     height: 100%;
     padding: 10px 0;
-    background-color: #32ab90;
-    background-image: url(../img/bg_demo.jpg);
     background-repeat: repeat-x;
     background-position: left top;
     background-size: 100% 100%;

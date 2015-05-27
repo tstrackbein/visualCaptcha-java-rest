@@ -1,7 +1,9 @@
 package com.kuhniverse.web;
 
 import com.kuhniverse.business.CaptchaSession;
+import com.kuhniverse.domain.CaptchaData;
 import com.kuhniverse.domain.CaptchaFrontEndData;
+import com.kuhniverse.domain.CaptchaValidationResult;
 import com.kuhniverse.integration.CaptchaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * controller methods for captcha API
@@ -84,24 +84,27 @@ public class CaptchaController {
     public void validate(HttpServletRequest request, HttpServletResponse response) {
         log.debug("Validating captcha response");
         Enumeration<String> keys = request.getParameterNames();
-        Map<String, String> params = new HashMap<>();
+        CaptchaData captchaData = new CaptchaData();
         while (keys.hasMoreElements()) {
             String key = keys.nextElement();
-            params.put(key, request.getParameter(key));
+            if (key.startsWith("submit")) {
+                continue;
+            }
+            captchaData.setName(key);
+            captchaData.setValue(request.getParameter(key));
+            // captchaData.put(key, request.getParameter(key));
         }
-        boolean result = captchaSession.isValid(params);
+        CaptchaValidationResult result = captchaSession.validate(captchaData);
         String status = null;
-        if (result) {
-            status = "validImage";
-        } else {
-            status = "failedImage";
+        switch (result) {
+            case FAILED_IMAGE: status= "failedImage";break;
+            case VALID_IMAGE: status= "validImage";break;
+            case FAILED_AUDIO: status= "failedAudio";break;
+            case VALID_AUDIO: status= "validAudio";break;
+            default: status="otherError";
         }
         response.setStatus(HttpStatus.FOUND.value());
         response.setHeader("Location", "/?status=" + status);
-        // /?status=failedImage
-        // /?status=validImage
-        //?status=failedAudio
-        ///?status=validAudio;
         captchaSession.invalidate();
     }
 

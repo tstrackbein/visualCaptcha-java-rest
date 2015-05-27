@@ -29,4 +29,5 @@ public class CaptchaIntegrationTest {
         CaptchaFrontEndData cfe = controller.start(size);
         Assert.assertEquals(size, cfe.getValues().size() );
     }
+
 }

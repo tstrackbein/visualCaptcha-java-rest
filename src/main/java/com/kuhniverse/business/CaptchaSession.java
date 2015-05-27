@@ -1,8 +1,10 @@
 package com.kuhniverse.business;
 
 import com.kuhniverse.domain.CaptchaAnswer;
+import com.kuhniverse.domain.CaptchaData;
 import com.kuhniverse.domain.CaptchaFrontEndData;
 import com.kuhniverse.domain.CaptchaSessionInfo;
+import com.kuhniverse.domain.CaptchaValidationResult;
 import com.kuhniverse.integration.CaptchaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +18,6 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
@@ -62,7 +63,7 @@ public class CaptchaSession implements Serializable {
 
         //resp.setContentType("application/json");
         //resp.getWriter().write(new GsonBuilder().create().toJson(frontendData));
-        log.debug("Capture session data initialized with {} values", optionCount);
+        log.debug("Capture session data field {} initialized with {} values", fieldName, optionCount);
         return frontendData;
     }
 
@@ -76,7 +77,7 @@ public class CaptchaSession implements Serializable {
         List<CaptchaAnswer> answers = captchaSessionInfo.getChoices();
         if (answers != null && answers.size() > index) {
             CaptchaAnswer ca = answers.get(index);
-            log.debug("Serving image {}", ca);
+            log.debug("Fetch Image {}", ca);
             return captchaRepository.getImageStream(ca.getPath());
         } else {
             throw new RuntimeException("Requested image for invalid index: " + index);
@@ -101,20 +102,27 @@ public class CaptchaSession implements Serializable {
     /**
      * Validate Solution
      */
-    public boolean isValid(Map<String, String> params) {
+    public CaptchaValidationResult validate(CaptchaData captchaData) {
         // String fieldName, String obfuscatedChoiceName
         if (this.captchaSessionInfo == null) {
             throw new RuntimeException("Captcha not initialized, cannot validate");
         }
         String audioFieldName = captchaSessionInfo.getAudioFieldName();
         String imageFieldName = captchaSessionInfo.getFieldName();
-        if (params.containsKey(audioFieldName)) {
-            return validateAudio(params.get(audioFieldName));
-        } else if (params.containsKey(imageFieldName)) {
-            return validateImage(params.get(imageFieldName));
+        String receivedName = captchaData.getName();
+        if (receivedName == null) {
+            log.warn("Invalid response, no name received");
+            return CaptchaValidationResult.MISSING_FIELD_NAME;
+        } else if (captchaData.getValue() == null) {
+                log.warn("Invalid response, no value received");
+                return CaptchaValidationResult.MISSING_VALUE;
+        } else if (receivedName .equals(audioFieldName)) {
+            return validateAudio(captchaData.getValue()) ? CaptchaValidationResult.VALID_AUDIO : CaptchaValidationResult.FAILED_AUDIO;
+        } else if (receivedName .equals(imageFieldName)) {
+            return validateImage(captchaData.getValue()) ? CaptchaValidationResult.VALID_IMAGE : CaptchaValidationResult.FAILED_IMAGE;
         } else {
-            log.warn("Invalid response, neither audio fieldname {} nor image fieldname {} found in params (size={})", audioFieldName, imageFieldName, params.size());
-            return false;
+            log.warn("Invalid response, neither audio fieldname {} nor image fieldname {} found in params {}", audioFieldName, imageFieldName, captchaData);
+            return CaptchaValidationResult.OTHER_ERROR;
         }
     }
 

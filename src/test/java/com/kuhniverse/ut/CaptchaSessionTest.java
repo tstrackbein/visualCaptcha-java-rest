@@ -2,6 +2,7 @@ package com.kuhniverse.ut;
 
 import com.kuhniverse.business.CaptchaSession;
 import com.kuhniverse.domain.CaptchaAnswer;
+import com.kuhniverse.domain.CaptchaData;
 import com.kuhniverse.domain.CaptchaFrontEndData;
 import com.kuhniverse.domain.CaptchaSessionInfo;
 import com.kuhniverse.integration.CaptchaRepository;
@@ -10,9 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by tillkuhn on 26.05.2015.
@@ -38,9 +37,10 @@ public class CaptchaSessionTest {
         String imageFieldName = data.getImageFieldName();
         List<String> values = data.getValues();
         for (String value: values) {
-            Map<String,String> params = new HashMap<>();
-            params.put(imageFieldName,value);
-            if (captchaSession.isValid(params)) {
+            CaptchaData params = new CaptchaData();
+            params.setName(imageFieldName);
+            params.setValue(value);
+            if (! captchaSession.validate(params).isFailed()) {
                 valid++;
             } else {
                 invalid++;
@@ -57,17 +57,19 @@ public class CaptchaSessionTest {
         Assert.assertNotNull(data);
         String audioFieldName = data.getAudioFieldName();
         Assert.assertNotNull(audioFieldName);
-        Map<String,String> params = new HashMap<>();
-        params.put(audioFieldName,"wrongAnswer");
-        boolean valid = captchaSession.isValid(params);
+        CaptchaData params = new CaptchaData();
+        params.setName(audioFieldName);
+        params.setValue("wrongAnswer");
+        boolean valid = captchaSession.validate(params).isValid();
         Assert.assertFalse(valid);
         // Now check for the right answer
         CaptchaSessionInfo info = (CaptchaSessionInfo ) ReflectionTestUtils.getField(captchaSession,"captchaSessionInfo");
         Assert.assertNotNull(info);
         CaptchaAnswer ca = info.getAudioAnswer();
-        Map<String,String> params2 = new HashMap<>();
-        params.put(audioFieldName,ca.getName());
-        boolean valid2 = captchaSession.isValid(params);
+        CaptchaData params2 = new CaptchaData();
+        params2.setName(audioFieldName);
+        params2.setValue(ca.getName());
+        boolean valid2 = captchaSession.validate(params2).isValid();
         Assert.assertTrue(valid2);
     }
 
