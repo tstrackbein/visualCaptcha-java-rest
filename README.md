@@ -1,4 +1,4 @@
-visualCaptcha-java-rest [![Build Status](https://travis-ci.org/tillkuhn/visualCaptcha-java-rest.svg?branch=master)](https://travis-ci.org/tillkuhn/visualCaptcha-java-rest)
+visualCaptcha-java-rest [![Build Status](https://travis-ci.org/tillkuhn/visualCaptcha-java-rest.svg?branch=master)](https://travis-ci.org/tillkuhn/visualCaptcha-java-rest) [![Coverage Status](https://coveralls.io/repos/tillkuhn/visualCaptcha-java-rest/badge.svg)](https://coveralls.io/r/tillkuhn/visualCaptcha-java-rest)
 ========================
 This is a demo/sample standalone app that uses Spring Boot and the visualCaptcha AngularJS bower package as a proof-of-concept for how to integrate with REST Services based on Spring / Java.
 
