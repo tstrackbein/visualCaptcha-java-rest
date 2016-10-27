@@ -10,7 +10,7 @@
     <artifactId>visualCaptcha-java-rest</artifactId>
     <!--<name>${project.artifactId}</name> -->
     <description>Visual Captcha Implementation using Spring based Rest Services</description>
-    <version>0.1</version>
+    <version>0.2</version>
     <packaging>jar</packaging>
     <url>https://github.com/tillkuhn/visualCaptcha-java-res</url>
 
