@@ -1,10 +1,6 @@
 package com.kuhniverse.business;
 
-import com.kuhniverse.domain.CaptchaAnswer;
-import com.kuhniverse.domain.CaptchaData;
-import com.kuhniverse.domain.CaptchaFrontEndData;
-import com.kuhniverse.domain.CaptchaSessionInfo;
-import com.kuhniverse.domain.CaptchaValidationResult;
+import com.kuhniverse.domain.*;
 import com.kuhniverse.integration.CaptchaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +30,8 @@ public class CaptchaSession implements Serializable {
 
     private Logger log = LoggerFactory.getLogger(CaptchaSession.class);
 
+    public static int MIN_OPTION_COUNT = 2;
+
     private Random rand = new Random();
     private CaptchaSessionInfo captchaSessionInfo;
 
@@ -45,7 +43,7 @@ public class CaptchaSession implements Serializable {
      *
      */
     public CaptchaFrontEndData start(int optionCount) {
-
+        validateOptionCount(optionCount);
         String salt = UUID.randomUUID().toString();
         List<CaptchaAnswer> choices = getRandomCaptchaOptions(optionCount, salt);
         CaptchaAnswer validChoice = choices.get(rand.nextInt(optionCount));
@@ -67,6 +65,16 @@ public class CaptchaSession implements Serializable {
         return frontendData;
     }
 
+    /**
+     * see https://github.com/tillkuhn/visualCaptcha-java-rest/issues/3
+     * if only 1 or a small amount of options are requested chances are that captcha
+     * can be resolved automatically
+     */
+    private void validateOptionCount(int size) {
+        if (size < MIN_OPTION_COUNT) {
+            throw new CaptchaValidationException(CaptchaValidationResult.INSUFFICIENT_OPTION_COUNT,"Must request at least " + MIN_OPTION_COUNT + " options");
+        }
+    }
     /**
      * Get data for a particular image
      */

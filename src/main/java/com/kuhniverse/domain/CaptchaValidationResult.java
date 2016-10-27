@@ -13,6 +13,7 @@ public enum CaptchaValidationResult {
     FAILED_AUDIO (true),
     MISSING_FIELD_NAME (true),
     MISSING_VALUE (true),
+    INSUFFICIENT_OPTION_COUNT(true),
     OTHER_ERROR(true);
 
     boolean failed = false;
